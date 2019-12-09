@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27018:27017"
+
+  general:
+    container_name: general_api
+    image: registry.gitlab.com/grcprojetos/post-press/general-api
+    build:
+      context: .
+    depends_on:
+      - mongo
+    command: bash -c "python api.py -b && gunicorn -b '0.0.0.0:8000' -w 2 wsgi --log-level debug"
+    environment:
+      MONGO_HOST: 'mongodb://mongo:27017/admin'
+      MONGO_USER: admin
+      MONGO_PASS: admin
+      MONGO_DBNAME: postpress
+    volumes:
+      - ./.:/app/
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
