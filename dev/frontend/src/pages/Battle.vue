@@ -9,6 +9,8 @@
             q-item(v-for="heroe in heroes" :key="heroe._id")
               q-item-section {{heroe.name}}
               q-item-section {{heroe.class}}
+              q-item-section(avatar)
+                q-icon(:name="heroe.allocated ? 'checked' : 'clear'")
       template(v-slot:after)
         q-card.full-width(flat)
           q-card-section
@@ -20,6 +22,9 @@
 </template>
 
 <script>
+import cloneDeep from 'lodash/cloneDeep'
+import findIndex from 'lodash/findIndex'
+import find from 'lodash/find'
 import map from 'lodash/map'
 import extend from 'lodash/extend'
 
@@ -33,19 +38,19 @@ export default {
   data () {
     return {
       splitterModel: 50,
+      heroes: [],
+      dangerToClass: {
+        'Tiger': 'A',
+        'Dragon': 'S',
+        'Wolf': 'B',
+        'God': 'C'
+      },
+      oldBattle: null,
       battle: {
+        heroes: [],
         dangerLevel: '',
         monsterName: '',
-        location: [],
-        heroes: []
-      }
-    }
-  },
-  watch: {
-    battle: {
-      deep: true,
-      handler: (newValue, oldValue) => {
-        console.log('newValue', newValue)
+        location: []
       }
     }
   },
@@ -57,13 +62,32 @@ export default {
     })
     this.heroes = heroes
     this.sockets.subscribe('occurrence', (data) => {
-      console.log('data', data)
       this.battle = data
+      this.saveBatle()
     })
   },
   methods: {
     async saveBatle () {
-      await this.$eve.postBattle({})
+      if (this.oldBattle !== null && this.oldBattle.heroes.length() !== 0) {
+        map(this.oldBattle.heroes, (heroe) => {
+          let index = findIndex(this.heroes, { '_id': heroe._id })
+          this.heroes[index].alocated = false
+        })
+      }
+      let heroe = find(this.heroes, { alocated: false, class: this.dangerToClass[this.battle.dangerLevel] })
+      let index = findIndex(this.heroes, { '_id': heroe._id })
+      this.heroes[index].alocated = true
+      this.battle.heroes.push(heroe)
+      try {
+        await this.$eve.postBattle({
+          heroes: [heroe._id],
+          dangerLevel: this.battle.dangerLevel,
+          monsterName: this.battle.monsterName
+        })
+        this.oldBattle = cloneDeep(this.battle)
+      } catch (err) {
+        console.log('err')
+      }
     }
   }
 }

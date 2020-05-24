@@ -26,7 +26,7 @@ DATA = [
                 'name': 'Teste',
                 'slug': 'teste',
                 'descriptions': {
-                    'default': 'Testando'
+                    'default': 'Site de Herois'
                 },
                 'images': {
                     'login_banner': '',
@@ -101,21 +101,6 @@ DATA = [
                 }
             },
             {
-                'name': 'Administrador Ipea',
-                'slug': 'admin-ipea',
-                'group': {
-                    'value': 'admin',
-                    'reference': 'group',
-                    'field_search': 'slug',
-                    'field_value': '_id'
-                },
-                'modules': {
-                    'admin': ['base'],
-                    'app': [],
-                    'desktop': ['']
-                }
-            },
-            {
                 'name': 'Usuário Padrão',
                 'slug': 'normal-user',
                 'group': {
@@ -127,7 +112,7 @@ DATA = [
                 'modules': {
                     'admin': [''],
                     'app': [],
-                    'desktop': ['']
+                    'desktop': ['battle', 'heroe']
                 }
             },
         ]
@@ -204,11 +189,19 @@ DATA = [
                 'locked': False
             },
             {
-                'name': 'Bases',
-                'slug': 'base',
+                'name': 'Herois',
+                'slug': 'heroe',
                 'icon': 'list',
-                'link': '/admin/base/list',
-                'description': 'Módulo de Bases',
+                'link': '/user/heroe',
+                'description': 'Módulo de Heróis',
+                'locked': False
+            },
+            {
+                'name': 'Batalhas',
+                'slug': 'battle',
+                'icon': 'list',
+                'link': '/user/battle',
+                'description': 'Módulo de Batalhas',
                 'locked': False
             }
         ]
@@ -272,6 +265,19 @@ DATA = [
                                 {
                                     'order': 1,
                                     'item': 'logout'
+                                }
+                            ]
+                        },
+                        {
+                            'place': 'menu-user',
+                            'items': [
+                                {
+                                    'order': 1,
+                                    'item': 'heroe'
+                                },
+                                {
+                                  'order': 2,
+                                  'item': 'battle'
                                 }
                             ]
                         }

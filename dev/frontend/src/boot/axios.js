@@ -102,6 +102,11 @@ export const api = new Api({
       'url': 'heroe',
       'type': 'eve',
       'methods': ['GET', 'POST']
+    },
+    {
+      'url': 'battle',
+      'type': 'eve',
+      'methods': ['GET', 'POST']
     }
   ],
   baseURL: process.env.API || 'http://localhost:8000',

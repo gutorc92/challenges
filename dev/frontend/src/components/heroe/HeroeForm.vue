@@ -76,6 +76,8 @@ export default {
           message: 'Herói cadastrado com sucesso'
         })
         this.fetchData()
+        this.name = ''
+        this.classHeroe = ''
       } catch (err) {
         this.alert = true
         this.error = 'Usuário ou senha estão incorretos'
